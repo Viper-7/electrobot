@@ -103,15 +103,19 @@ class IRCServerChannel
 	*/
 	public static function getChannel($channel)
 	{
+		if($channel == '$$*') return;
 		if(empty(self::$channels[strtolower($channel)]))
 		{
-			$channel_obj = trim($channel, '#');
+			$channel_obj = trim($channel, '#:');
 			self::$channels[strtolower($channel)] = new $channel_obj(strtolower($channel));
 		}
 		
 		return self::$channels[strtolower($channel)];
 	}
 	
+	public function send_action($action) {
+		$this->server->send_msg($this->channel, "\x01ACTION {$action}\x01");
+	}
 	/**
 	* Send a message in the channel
 	*
