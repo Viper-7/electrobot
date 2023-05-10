@@ -276,6 +276,8 @@ class IRCServerConnection
 						$chan = IRCServerChannel::getChannel($user->nick);
 
                                                 $chan->event_msg($user, $content);
+
+						unset(IRCServerChannel::$channels[$lnick]);
 					}
 				}
 				break;
@@ -412,6 +414,10 @@ class IRCServerConnection
 			{
 				foreach(IRCServerChannel::$channels as $channel)
 				{
+					if($this->defaultChannel == $channel->channel)
+					{
+						file_put_contents('/var/run/electrobot.status', $channel->online ? 0 : 1);
+					}
 					if(!$channel->online && time() != $this->lastjoin)
 					{
 						$this->lastjoin = time();
@@ -423,6 +429,8 @@ class IRCServerConnection
 						$channel->poll($this->cycles);
 					}
 				}
+			} else {
+				file_put_contents('/var/run/electrobot.status', 0);
 			}
 
 			if(count($this->buffer))
