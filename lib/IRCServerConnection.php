@@ -337,7 +337,6 @@ class IRCServerConnection
 				{
 					if( !$this->authenticated )
 					{
-						$this->send_line("PASS electrobot:ddrgh427");
 						$this->send_line("NICK {$this->nick}");
 						$this->send_line("USER {$this->nick} localhost {$this->server} :{$this->nick}");
 						$this->authenticated = TRUE;
