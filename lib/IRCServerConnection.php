@@ -166,6 +166,8 @@ class IRCServerConnection
 			throw new IRCServerException('Already connected to a server!');
 		}
 		
+		if($this->debug) echo "Connecting to {$this->server}\n";
+
 		if($this->bindto)
 		{
 			$context = stream_context_create(array('socket' => array('bindto' => $this->bindto . ':0')));
@@ -173,6 +175,8 @@ class IRCServerConnection
 		} else {
 			$fp = stream_socket_client("tcp://{$this->server}:{$this->port}", $errno, $errstr, 30, STREAM_CLIENT_CONNECT); 
 		}
+
+		if($this->debug) echo "Socket open {$errstr}\n";
 
 		$this->conn = $fp;
 		
@@ -183,7 +187,7 @@ class IRCServerConnection
 		}
 		
 		$this->connected = TRUE;
-		
+
 		foreach($channels as $channel)
 		{
 			$chan = IRCServerChannel::getChannel($channel);
@@ -331,6 +335,7 @@ class IRCServerConnection
 				{
 					if( !$this->authenticated )
 					{
+						$this->send_line("PASS electrobot:ddrgh427");
 						$this->send_line("NICK {$this->nick}");
 						$this->send_line("USER {$this->nick} localhost {$this->server} :{$this->nick}");
 						$this->authenticated = TRUE;
@@ -343,7 +348,7 @@ class IRCServerConnection
 				if($parts[2] != $this->nick)
 				{
 					$chan = IRCServerChannel::getChannel($parts[2]);
-					$chan->event_notice($user, $content);
+					if($chan) $chan->event_notice($user, $content);
 				}
 				break;
 			case 'MODE':
@@ -386,8 +391,8 @@ class IRCServerConnection
 		{
 			$this->cycles++;
 			
-			// If we havent been pinged in the last 5 minutes, exit
-			if($this->lastping < time() - 300)
+			// If we havent been pinged in the last 10 minutes, exit
+			if($this->lastping < time() - 600)
 			{
 				self::destroy();
 			}
