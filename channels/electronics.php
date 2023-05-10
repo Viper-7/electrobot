@@ -498,7 +498,6 @@ var_dump($match);
 
 					//	$this->recentParts[] = $part;
 					//	$this->recentPartTimes[$part] = time();
-
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, 'https://octopart.com/api/v3/parts/search?apikey=58710656&include[]=descriptions&q=' . $part);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -561,7 +560,6 @@ var_dump($match);
 					);
 					
 					curl_setopt($ch, CURLOPT_URL, $qry = 'https://octopart.com/api/v3/parts/match?' . http_build_query($params) . '&include[]=short_description');
-
 					$ret = curl_exec($ch);
 					file_put_contents('/tmp/lastmatch', $ret);
 
@@ -647,7 +645,6 @@ if(count($message_parts) == 1) {
 } else {
 	$bat = trim($message_parts[1]);
 	if($bat == '2032') $bat = 'CR2032';
-
 		if(preg_match('/^(\w{2,3}?)(\d+)(?:[a-zA-Z]*$)/', $bat, $match)) {
                         $code = $match[1];
                         $size = $match[2];
