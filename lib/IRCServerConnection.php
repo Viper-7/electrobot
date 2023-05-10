@@ -234,6 +234,7 @@ class IRCServerConnection
 			case 'NOTICE':
 				if(!$this->authenticated && $parts[1] == 'AUTH')
 				{
+					$this->send_line("PASS {$env['BOT_NICKSERV_USER']}:{$env['BOT_NICKSERV_PASS']}");
 					$this->send_line("NICK {$this->nick}");
 					$this->send_line("USER {$this->nick} localhost {$this->server} :{$this->nick}");
 					$this->authenticated = TRUE;
@@ -337,6 +338,7 @@ class IRCServerConnection
 				{
 					if( !$this->authenticated )
 					{
+						$this->send_line("PASS {$env['BOT_NICKSERV_USER']}:{$env['BOT_NICKSERV_PASS']}");
 						$this->send_line("NICK {$this->nick}");
 						$this->send_line("USER {$this->nick} localhost {$this->server} :{$this->nick}");
 						$this->authenticated = TRUE;
